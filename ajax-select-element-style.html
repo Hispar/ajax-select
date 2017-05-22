@@ -1,0 +1,59 @@
+<dom-module id='ajax-select-element-style'>
+  <template>
+    <style>
+       :host {
+        display: block;
+        box-sizing: border-box;
+        position: relative;
+        outline: 0px;
+      }
+
+       :host([disabled]) {
+        pointer-events: none;
+      }
+
+       :host #search {
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+
+        display: inline-block;
+        vertical-align: middle;
+        height: 2em;
+        line-height: 34px;
+        min-width: 1em;
+        margin-right: 24px;
+        background: transparent;
+        outline-style: none !important;
+        border: none;
+        flex: 1;
+      }
+
+       :host hr {
+        margin: 0;
+      }
+
+       :host #selectedListUl {
+        display: flex;
+        margin: 0;
+        padding: 0;
+      }
+
+       :host #selectedListUl>.selected-item {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        height: 2em;
+        line-height: 2em;
+        border-radius: 1em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        margin-right: 0.2em;
+        text-overflow: ellipsis;
+        background-color: #E7E7E7;
+        color: #757575;
+        overflow: hidden;
+      }
+    </style>
+  </template>
+</dom-module>

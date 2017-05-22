@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>ajax-select-element demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../ajax-select-element.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic ajax-select-element demo</h3>
+      <demo-snippet>
+        <template>
+          <!--<ajax-select-element
+            endpoint="http://0.0.0.0:8080/project"
+            label="proyectos"
+            items-name="objects"
+            item-name="name"
+            item-value="id"
+            search-param="q"
+          >                        
+          </ajax-select-element>-->
+
+          <!--https://autocomplete.clearbit.com/v1/companies/suggest?query=a-->
+          <div>                    
+          <ajax-select-element
+            label="clearbit"            
+            endpoint="https://autocomplete.clearbit.com/v1/companies/suggest"
+            search-param="query"
+            item-name="name"
+            item-value="name"
+          >                        
+          </ajax-select-element>
+          </div>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>

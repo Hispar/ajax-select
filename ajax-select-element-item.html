@@ -1,0 +1,42 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<!--<link rel="import" href="../polymer/lib/elements/dom-if.html">-->
+<!--<link rel="import" href="../polymer/lib/elements/dom-repeat.html">-->
+
+<!--<link rel="import" href="../iron-ajax/iron-ajax.html">-->
+<!--<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">-->
+
+<!--
+`ajax-select-element`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="ajax-select-element-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }    
+    </style>
+    <slot></slot>
+  </template>
+
+  <script>
+    /** @polymerElement */
+    class AjaxSelectElementItem extends Polymer.Element {
+      static get is() {
+        return 'ajax-select-element-item';
+      }
+      static get properties() {
+        return {
+          item: {
+            type: Object
+          }
+        };
+      }
+    }
+
+    window.customElements.define(AjaxSelectElementItem.is, AjaxSelectElementItem);
+  </script>
+</dom-module>

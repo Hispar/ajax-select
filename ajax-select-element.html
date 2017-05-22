@@ -1,0 +1,197 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../polymer/lib/elements/array-selector.html">
+
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="ajax-select-element-item.html"> 
+<link rel="import" type="css" href="ajax-select-element-style.html">
+
+<!--
+`ajax-select-element`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="ajax-select-element">    
+  <template>
+    
+    <style include="ajax-select-element-style">
+    </style>
+
+    <iron-ajax id="endpointRequest" url="{{endpoint}}" handle-as="json" on-response="handleResponse" on-error="handleError">
+    </iron-ajax>
+
+    <array-selector id="selector" items="{{selected}}" selected="{{selected}}" multi toggle></array-selector>
+
+    <ul id="selectedListUl">
+      <template is="dom-repeat" id="selectedList" items="{{selected}}">
+        <li class="selected-item">
+          <ajax-select-element-item item="{{item}}" on-click="removeSelection">
+            {{getItemName(item)}}
+          </ajax-select-element-item>
+        </li>
+      </template>
+    </ul>
+
+    <input id="search" type="text" placeholder="{{label}}" name="search">
+    <hr>
+    <ul id="dataListUl">      
+      <template is="dom-repeat" id="dataList" items="{{data}}">
+        <li class="item">
+          <ajax-select-element-item item="{{item}}" on-click="addSelection">
+            {{getItemName(item)}}
+          </ajax-select-element-item>
+        </li>
+      </template>
+    </ul>
+  </template>
+
+  <script>
+    /** @polymerElement */
+    class AjaxSelectElement extends Polymer.Element {
+      static get is() {
+        return 'ajax-select-element';
+      }
+      static get properties() {
+        return {
+          endpoint: {
+            type: String
+          },
+          label: {
+            type: String
+          },
+          itemsName: {
+            type: String
+          },
+          searchParam: {
+            type: String,
+            value: 'search'
+          },
+          itemName: {
+            type: String
+          },
+          itemValue: {
+            type: String
+          },
+          data: {
+            type: Array
+          },
+          apikey_name: {
+            type: String,
+            value: 'key'
+          },
+          apikey: {
+            type: String
+          },
+          selected: {
+            type: Array,
+            value: []
+          }
+        };
+      }
+
+      validEndpoint(endpoint) {
+        return endpoint !== '';
+      }
+
+      // Element class can define custom element reactions
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      ready() {
+        super.ready();
+        this.$.search.addEventListener('keypress', e => {
+          this._updateSearch(e)
+        });
+        this.$.search.addEventListener('keyup', e => {
+          this._updateSearch(e)
+        });
+      }
+
+      handleResponse(data) {
+        if (data.detail.response !== null) {
+          if (this.itemsName) {
+            this.data = data.detail.response[this.itemsName];
+          } else {
+            this.data = data.detail.response;
+          }
+        }
+      }
+
+      addSelection(e) {
+        var item = this.$.dataList.itemForElement(e.target);
+
+        var data = this.get('data');
+        var dataindex = data.indexOf(item);
+        if (dataindex >= 0) {          
+          this.splice('data', dataindex, 1);
+        }
+
+        var selected = this.get('selected');
+        var index = selected.indexOf(item);
+        if (index < 0) {
+          this.selected.push(item);
+        } else {
+          this.splice('selected', index, 1);
+        }
+
+        this.$.selector.select(item);
+      }
+
+      removeSelection(e) {
+        var item = this.$.selectedList.itemForElement(e.target);
+
+        var data = this.get('data');
+        var dataindex = data.indexOf(item);
+        if (dataindex < 0) {          
+          this.push('data', item);
+        }
+
+        var selected = this.get('selected');
+        var index = selected.indexOf(item);
+        if (index >= 0) {
+          this.splice('selected', index, 1);
+        }
+
+        this.$.selector.deselect(item);
+      }
+
+      handleError(error) {
+        this.data = null;
+      }
+
+      getItemName(item) {
+        return item[this.itemName];
+      }
+
+      getItemValue(item) {
+        return item[this.itemValue];
+      }
+
+      _updateSearch(e) {
+        var search = e.target.value;
+        var self = this;
+        this._debouncer = Polymer.Debouncer.debounce(
+          this._debouncer,
+          Polymer.Async.timeOut.after(500),
+          function () {
+            if (self.apikey) {
+              self.$.endpointRequest.params[self.apikey_name] = self.apikey;
+            }
+            self.$.endpointRequest.params[self.searchParam] = search;
+            if (self.$.endpointRequest.params[self.searchParam]) {
+              self.$.endpointRequest.generateRequest();
+            } else {
+              self.data = null;
+            }
+          }
+        );
+      }
+    }
+
+    window.customElements.define(AjaxSelectElement.is, AjaxSelectElement);
+  </script>
+</dom-module>
